@@ -1,5 +1,6 @@
 package com.certificator.openssl;
 
+import com.certificator.openssl.structure.CAFileStructureCreator;
 import com.certificator.process.StreamGobbler;
 import jakarta.inject.Named;
 
@@ -10,6 +11,13 @@ import java.util.concurrent.Future;
 
 @Named
 public class CertificateCreator {
+  CAFileStructureCreator caFileStructureCreator;
+
+  public CertificateCreator(CAFileStructureCreator caFileStructureCreator) {
+    this.caFileStructureCreator = caFileStructureCreator;
+
+    caFileStructureCreator.createFileStructure("testCA");
+  }
 
   public void createCACertificate() throws Exception {
     ProcessBuilder builder = new ProcessBuilder();
@@ -19,15 +27,10 @@ public class CertificateCreator {
 
     StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
 
-    try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
-      Future<?> future = executorService.submit(streamGobbler);
-      int exitCode = process.waitFor();
-      assert exitCode == 0;
-      future.get();
-    }
-  }
-
-  public static void main(String[] args) throws Exception {
-    new CertificateCreator().createCACertificate();
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    Future<?> future = executorService.submit(streamGobbler);
+    int exitCode = process.waitFor();
+    assert exitCode == 0;
+    future.get();
   }
 }

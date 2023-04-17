@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class CertificatorApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(CertificatorApplication.class, args);
 	}
-
 }
