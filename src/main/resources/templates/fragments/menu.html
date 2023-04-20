@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Certificator</title>
+</head>
+<body>
+  <div th:fragment="menu">
+    <a th:href="@{/ca}" th:text="'CA certificate generator'" />
+    <br/>
+    <a th:href="@{/usr}" th:text="'User certificate generator'" />
+  </div>
+</body>
+</html>

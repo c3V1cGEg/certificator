@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Generate CA certificate</title>
+</head>
+<body>
+
+<form action="/generate" method="post" th:fragment="content">
+  <table>
+    <tr>
+      <td>Common name (CN):</td>
+      <td><input name="commonName" value="" placeholder="common name"/></td>
+    </tr>
+
+    <tr>
+      <td>Country (C):</td>
+      <td><input name="country" value="" placeholder="US"/></td>
+    </tr>
+
+    <tr>
+      <td>State or province (ST):</td>
+      <td><input name="stateOrProvince" value="" placeholder="California"/></td>
+    </tr>
+
+    <tr>
+      <td>Locality (L):</td>
+      <td><input name="locality" value="" placeholder="Beverly Hills"/></td>
+    </tr>
+
+    <tr>
+      <td>Organization name (O):</td>
+      <td><input name="organizationName" value="" placeholder="Example company"/></td>
+    </tr>
+
+    <tr>
+      <td>Organizational unit (OU):</td>
+      <td><input name="organizationalUnit" value="" placeholder="development"/></td>
+    </tr>
+
+    <tr>
+      <td><button type="submit">Generate</button></td>
+      <td></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

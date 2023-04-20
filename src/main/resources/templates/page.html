@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Certificator</title>
+  <style>
+    table td { vertical-align: top; }
+  </style>
+</head>
+<body>
+  <table border="1">
+    <tr>
+      <td th:insert="fragments/menu.html :: menu">
+      </td>
+      <td th:insert="'fragments/' + ${templateName} + '.html' :: content">
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

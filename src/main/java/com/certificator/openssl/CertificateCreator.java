@@ -1,13 +1,10 @@
 package com.certificator.openssl;
 
+import com.certificator.openssl.structure.CAFileStructure;
 import com.certificator.openssl.structure.CAFileStructureCreator;
-import com.certificator.process.StreamGobbler;
+import com.certificator.process.ProcessCall;
+import com.certificator.process.ProcessCall.Result;
 import jakarta.inject.Named;
-
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @Named
 public class CertificateCreator {
@@ -15,22 +12,27 @@ public class CertificateCreator {
 
   public CertificateCreator(CAFileStructureCreator caFileStructureCreator) {
     this.caFileStructureCreator = caFileStructureCreator;
-
-    caFileStructureCreator.createFileStructure("testCA");
   }
 
-  public void createCACertificate() throws Exception {
-    ProcessBuilder builder = new ProcessBuilder();
-    builder.command("cmd.exe", "/c", "dir");
-    builder.directory(new File("C:/"));
-    Process process = builder.start();
+  public void createCACertificate(CertificateParameters certParams) {
+    CAFileStructure fs = caFileStructureCreator.createFileStructure(certParams.getCommonName());
 
-    StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
+    ProcessCall call = new ProcessCall();
+    CACertificateCommands commands = new CACertificateCommands();
 
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
-    Future<?> future = executorService.submit(streamGobbler);
-    int exitCode = process.waitFor();
-    assert exitCode == 0;
-    future.get();
+    Result result = call.execute(commands.getCreateKey(fs), fs.getCaPath());
+    assert result.exitCode() == 0;
+
+    result = call.execute(commands.getCreateRequest(fs, certParams.toCN()), fs.getCaPath());
+    assert result.exitCode() == 0;
+
+    result = call.execute(commands.getCreateCer(fs), fs.getCaPath());
+    assert result.exitCode() == 0;
+
+    result = call.execute(commands.getCreatePKCS12(fs, certParams.getCommonName()), fs.getCaPath());
+    assert result.exitCode() == 0;
+
+    result = call.execute(commands.getCreateCrl(fs), fs.getCaPath());
+    assert result.exitCode() == 0;
   }
 }

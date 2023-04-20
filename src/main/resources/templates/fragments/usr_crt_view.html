@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Generate user certificate</title>
+</head>
+<body>
+
+<form action="/generate" method="post" th:fragment="content" th:object="${caParams}">
+  <table>
+    <tr>
+      <td>Issuer:</td>
+      <td>
+        <select id="issuerCN" name="issuerCN" onchange="chooseCA()">
+          <option></option>
+          <option th:each="ca : ${casList}" th:value="${ca}" th:text="${ca}" th:selected="${ca == caParams.commonName}"></option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Common name (CN):</td>
+      <td><input name="commonName" placeholder="common name"/></td>
+    </tr>
+
+    <tr>
+      <td>Country (C):</td>
+      <td><input name="country" th:field="*{country}" placeholder="US"/></td>
+    </tr>
+
+    <tr>
+      <td>State or province (ST):</td>
+      <td><input name="stateOrProvince" th:field="*{stateOrProvince}" placeholder="California"/></td>
+    </tr>
+
+    <tr>
+      <td>Locality (L):</td>
+      <td><input name="locality" th:field="*{locality}" placeholder="Beverly Hills"/></td>
+    </tr>
+
+    <tr>
+      <td>Organization name (O):</td>
+      <td><input name="organizationName" th:field="*{organizationName}" placeholder="Example company"/></td>
+    </tr>
+
+    <tr>
+      <td>Organizational unit (OU):</td>
+      <td><input name="organizationalUnit" th:field="*{organizationalUnit}" placeholder="development"/></td>
+    </tr>
+
+    <tr>
+      <td><button type="submit">Generate</button></td>
+      <td></td>
+    </tr>
+
+  </table>
+  <script>
+    function chooseCA() {
+      const selectedCA = document.getElementById("issuerCN");
+      window.location = "/usr?caCN=" + selectedCA.value;
+    }
+  </script>
+</form>
+</body>
+</html>
