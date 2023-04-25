@@ -11,17 +11,17 @@ import java.nio.file.Files;
 import java.util.Map;
 
 @Named
-public class CAFileStructureCreator implements OSSupport {
+public class CertificateIssuingFileStructureCreator implements OSSupport {
   String certificatesRoot;
   private final TemplateEngine rawTemplateEngine;
 
-  public CAFileStructureCreator(@Value("${certificates.root}") String certificatesRoot, TemplateEngine rawTemplateEngine) {
+  public CertificateIssuingFileStructureCreator(@Value("${certificates.root}") String certificatesRoot, TemplateEngine rawTemplateEngine) {
     this.certificatesRoot = certificatesRoot;
     this.rawTemplateEngine = rawTemplateEngine;
   }
 
-  public CAFileStructure createFileStructure(String caCertificateCN) {
-    CAFileStructure fileStructure = new CAFileStructure(certificatesRoot, caCertificateCN);
+  public CertificateIssuingFileStructure createFileStructure(String caCertificateCN) {
+    CertificateIssuingFileStructure fileStructure = new CertificateIssuingFileStructure(certificatesRoot, caCertificateCN);
 
     try {
       Files.createDirectories(fileStructure.getCaRoot());
@@ -34,6 +34,18 @@ public class CAFileStructureCreator implements OSSupport {
       Files.writeString(fileStructure.getIndexTxt(), "");
 
       Files.writeString(fileStructure.getOpensslConfig(), createOpensslConfiguration(caCertificateCN));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    return fileStructure;
+  }
+
+  public CertificateIssuingFileStructure createIssuingFileStructure(String caCertificateCN, String certificateCN) {
+    CertificateIssuingFileStructure fileStructure = new CertificateIssuingFileStructure(certificatesRoot, caCertificateCN);
+
+    try {
+      Files.createDirectories(fileStructure.getIssuingCertificatePath(certificateCN));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -1,6 +1,6 @@
 package com.certificator.openssl;
 
-import com.certificator.openssl.structure.CAFileStructure;
+import com.certificator.openssl.structure.CertificateIssuingFileStructure;
 import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Named
@@ -43,7 +42,7 @@ public class CertificateDataLoader {
   }
 
   public X509Certificate loadCACertificate(String cn) {
-    CAFileStructure fs = new CAFileStructure(certificatesRoot, cn);
+    CertificateIssuingFileStructure fs = new CertificateIssuingFileStructure(certificatesRoot, cn);
 
     try {
       CertificateFactory cf = CertificateFactory.getInstance("X509");

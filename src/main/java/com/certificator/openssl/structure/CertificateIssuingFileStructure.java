@@ -4,7 +4,7 @@ import com.certificator.support.OSSupport;
 
 import java.nio.file.Path;
 
-public class CAFileStructure implements OSSupport {
+public class CertificateIssuingFileStructure implements OSSupport {
   private final Path caRoot;
   private final Path caPath;
   private final Path certsPath;
@@ -19,7 +19,7 @@ public class CAFileStructure implements OSSupport {
   private final Path caP12;
   private final Path crl;
 
-  public CAFileStructure(String basePath, String caCN) {
+  public CertificateIssuingFileStructure(String basePath, String caCN) {
     String fixedBasePath = basePath.endsWith(fsSeparator()) ? basePath : basePath + fsSeparator();
     this.caRoot = Path.of(fixedBasePath, caCN);
     this.caPath = Path.of(fixedBasePath, caCN, "ca");
@@ -83,6 +83,30 @@ public class CAFileStructure implements OSSupport {
 
   public Path getCaP12() {
     return caP12;
+  }
+
+  public Path getIssuingCertificatePath(String commonName) {
+    return Path.of(issuingPath.toString(), commonName);
+  }
+
+  public Path getIssuingCertificatePrivateKeyPath(String commonName) {
+    return Path.of(issuingPath.toString(), commonName, commonName + ".key");
+  }
+
+  public Path getIssuingCertificateRequestPath(String commonName) {
+    return Path.of(issuingPath.toString(), commonName, commonName + ".req");
+  }
+
+  public Path getIssuingCertificateSignedCertificatePath(String commonName) {
+    return Path.of(issuingPath.toString(), commonName, commonName + ".cer");
+  }
+
+  public Path getIssuingCertificatePemPath(String commonName) {
+    return Path.of(issuingPath.toString(), commonName, commonName + ".pem");
+  }
+
+  public Path getIssuingCertificateP12Path(String commonName) {
+    return Path.of(issuingPath.toString(), commonName, commonName + ".p12");
   }
 
   public Path getCrl() {

@@ -10,10 +10,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ProcessCall implements OSSupport {
-  public record Result (int exitCode, List<String> log){}
-  List<String> call = isWindows() ? List.of("cmd.exe", "/c") : List.of("/bin/sh", "-c");
+  public record ProcessResult(int exitCode, List<String> log) { }
+  private final List<String> call = isWindows() ? List.of("cmd.exe", "/c") : List.of("/bin/sh", "-c");
+  private final Path workingDir;
 
-  public Result execute(String command, Path workingDir) {
+  public ProcessCall(Path workingDir) {
+    this.workingDir = workingDir;
+  }
+
+  public void execute(String command) {
+    ProcessResult processResult = execute(command, workingDir);
+    assert processResult.exitCode() == 0;
+  }
+
+  private ProcessResult execute(String command, Path workingDir) {
     try {
       ProcessBuilder builder = new ProcessBuilder();
       builder.command(call.get(0), call.get(1), command);
@@ -27,7 +37,7 @@ public class ProcessCall implements OSSupport {
         Future<?> future = executorService.submit(streamConsumer);
         int exitCode = process.waitFor();
         future.get();
-        return new Result(exitCode, output);
+        return new ProcessResult(exitCode, output);
       }
     } catch (Exception e) {
       //TODO: log

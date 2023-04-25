@@ -36,31 +36,59 @@ public class CertificateParameters {
     return commonName;
   }
 
+  public void setCommonName(String commonName) {
+    this.commonName = commonName;
+  }
+
   public String getCountry() {
     return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
   }
 
   public String getStateOrProvince() {
     return stateOrProvince;
   }
 
+  public void setStateOrProvince(String stateOrProvince) {
+    this.stateOrProvince = stateOrProvince;
+  }
+
   public String getLocality() {
     return locality;
+  }
+
+  public void setLocality(String locality) {
+    this.locality = locality;
   }
 
   public String getOrganizationName() {
     return organizationName;
   }
 
+  public void setOrganizationName(String organizationName) {
+    this.organizationName = organizationName;
+  }
+
   public String getOrganizationalUnit() {
     return organizationalUnit;
+  }
+
+  public void setOrganizationalUnit(String organizationalUnit) {
+    this.organizationalUnit = organizationalUnit;
   }
 
   public String getIssuerCN() {
     return issuerCN;
   }
 
-  public String toCN() {
+  public void setIssuerCN(String issuerCN) {
+    this.issuerCN = issuerCN;
+  }
+
+  public String toDN() {
     assert commonName != null && !commonName.isBlank();
 
     String result = createPart(CN, commonName);

@@ -41,7 +41,7 @@ public class UserCertificateCreationController {
 
   @PostMapping(value = "/generate")
   public ModelAndView generate(CertificateParameters cert) {
-    certificateCreator.createCACertificate(cert);
+    certificateCreator.createCertificateWithSelectedExtensions(cert);
     return new ModelAndView("redirect:/usr");
   }
 }

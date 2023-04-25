@@ -1,6 +1,6 @@
 package com.certificator.openssl;
 
-import com.certificator.openssl.structure.CAFileStructure;
+import com.certificator.openssl.structure.CertificateIssuingFileStructure;
 
 public class CACertificateCommands {
   String createKey = "openssl genrsa -out %s 2048";
@@ -9,23 +9,31 @@ public class CACertificateCommands {
   String createPKCS12 = "openssl pkcs12 -export -out %s -in %s -inkey %s -password pass:%s";
   String createCrl = "openssl ca -config %s -gencrl -out %s";
 
-  public String getCreateKey(CAFileStructure fs) {
+  private final CertificateIssuingFileStructure fs;
+  private final CertificateParameters certParams;
+
+  public CACertificateCommands(CertificateIssuingFileStructure fs, CertificateParameters certParams) {
+    this.fs = fs;
+    this.certParams = certParams;
+  }
+
+  public String getCreateKey() {
     return createKey.formatted(fs.getPrivateKey().toString());
   }
 
-  public String getCreateRequest(CAFileStructure fs, String subjectDN) {
-    return createRequest.formatted(fs.getPrivateKey().toString(), fs.getCaPEM().toString(), fs.getOpensslConfig().toString(), subjectDN);
+  public String getCreateRequest() {
+    return createRequest.formatted(fs.getPrivateKey().toString(), fs.getCaPEM().toString(), fs.getOpensslConfig().toString(), certParams.toDN());
   }
 
-  public String getCreateCer(CAFileStructure fs) {
+  public String getCreateCer() {
     return createCer.formatted(fs.getCaPEM(), fs.getCaCer());
   }
 
-  public String getCreatePKCS12(CAFileStructure fs, String commonName) {
-    return createPKCS12.formatted(fs.getCaP12().toString(), fs.getCaCer().toString(), fs.getPrivateKey().toString(), commonName);
+  public String getCreatePKCS12() {
+    return createPKCS12.formatted(fs.getCaP12().toString(), fs.getCaCer().toString(), fs.getPrivateKey().toString(), certParams.getCommonName());
   }
 
-  public String getCreateCrl(CAFileStructure fs) {
+  public String getCreateCrl() {
     return createCrl.formatted(fs.getOpensslConfig(), fs.getCrl());
   }
 }

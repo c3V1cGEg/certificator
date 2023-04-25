@@ -1,38 +1,39 @@
 package com.certificator.openssl;
 
-import com.certificator.openssl.structure.CAFileStructure;
-import com.certificator.openssl.structure.CAFileStructureCreator;
+import com.certificator.openssl.structure.CertificateIssuingFileStructure;
+import com.certificator.openssl.structure.CertificateIssuingFileStructureCreator;
 import com.certificator.process.ProcessCall;
-import com.certificator.process.ProcessCall.Result;
 import jakarta.inject.Named;
 
 @Named
 public class CertificateCreator {
-  CAFileStructureCreator caFileStructureCreator;
+  CertificateIssuingFileStructureCreator certificateIssuingFileStructureCreator;
 
-  public CertificateCreator(CAFileStructureCreator caFileStructureCreator) {
-    this.caFileStructureCreator = caFileStructureCreator;
+  public CertificateCreator(CertificateIssuingFileStructureCreator certificateIssuingFileStructureCreator) {
+    this.certificateIssuingFileStructureCreator = certificateIssuingFileStructureCreator;
   }
 
   public void createCACertificate(CertificateParameters certParams) {
-    CAFileStructure fs = caFileStructureCreator.createFileStructure(certParams.getCommonName());
+    CertificateIssuingFileStructure fs = certificateIssuingFileStructureCreator.createFileStructure(certParams.getCommonName());
+    CACertificateCommands commands = new CACertificateCommands(fs, certParams);
 
-    ProcessCall call = new ProcessCall();
-    CACertificateCommands commands = new CACertificateCommands();
+    ProcessCall p = new ProcessCall(fs.getIssuingPath());
+    p.execute(commands.getCreateKey());
+    p.execute(commands.getCreateRequest());
+    p.execute(commands.getCreateCer());
+    p.execute(commands.getCreatePKCS12());
+    p.execute(commands.getCreateCrl());
+  }
 
-    Result result = call.execute(commands.getCreateKey(fs), fs.getCaPath());
-    assert result.exitCode() == 0;
+  public void createCertificateWithSelectedExtensions(CertificateParameters certParams) {
+    CertificateIssuingFileStructure fs = certificateIssuingFileStructureCreator.createIssuingFileStructure(certParams.getIssuerCN(), certParams.getCommonName());
+    CertificateCommands commands = new CertificateCommands(fs, certParams);
 
-    result = call.execute(commands.getCreateRequest(fs, certParams.toCN()), fs.getCaPath());
-    assert result.exitCode() == 0;
-
-    result = call.execute(commands.getCreateCer(fs), fs.getCaPath());
-    assert result.exitCode() == 0;
-
-    result = call.execute(commands.getCreatePKCS12(fs, certParams.getCommonName()), fs.getCaPath());
-    assert result.exitCode() == 0;
-
-    result = call.execute(commands.getCreateCrl(fs), fs.getCaPath());
-    assert result.exitCode() == 0;
+    ProcessCall p = new ProcessCall(fs.getIssuingPath());
+    p.execute(commands.getCreateKey());
+    p.execute(commands.getCreateRequest());
+    p.execute(commands.getSignCertificate("usr_cert"));
+    p.execute(commands.getCerToPem());
+    p.execute(commands.getCreatePKCS12());
   }
 }
