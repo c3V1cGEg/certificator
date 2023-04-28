@@ -5,7 +5,8 @@ import com.certificator.openssl.structure.CertificateIssuingFileStructure;
 public class CertificateCommands {
   String createKey = "openssl genrsa -out %s 2048";
   String createRequest = "openssl req -new -key %s -out %s -config %s -subj \"%s\" -batch";
-  String signCertificate = "openssl ca -in %s -out %s -config %s -extensions %s -batch";
+  String signCertificate = "openssl ca -in %s -out %s -config %s -extensions %s %s -batch";
+  String addExtension = "-addext \"subjectAltName = DNS:%s\"";
   String cerToPem = "openssl x509 -in %s -out %s";
   String createPKCS12 = "openssl pkcs12 -export -out %s -in %s -inkey %s -password pass:%s";
 
@@ -31,7 +32,9 @@ public class CertificateCommands {
   public String getSignCertificate(String extensions) {
     String reqPath = fs.getIssuingCertificateRequestPath(certParams.getCommonName()).toString();
     String certPath = fs.getIssuingCertificateSignedCertificatePath(certParams.getCommonName()).toString();
-    return signCertificate.formatted(reqPath, certPath, fs.getOpensslConfig().toString(), extensions);
+    String domainName = certParams.getDomainName();
+    String addSANExtension = domainName != null && !domainName.isBlank() ? addExtension.formatted(domainName) : "";
+    return signCertificate.formatted(reqPath, certPath, fs.getOpensslConfig().toString(), extensions, addSANExtension);
   }
 
   public String getCerToPem() {

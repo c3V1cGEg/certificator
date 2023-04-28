@@ -12,6 +12,7 @@ public class CertificateParameters {
   private String organizationName;
   private String organizationalUnit;
   private String issuerCN;
+  private String domainName;
 
   public CertificateParameters() {
   }
@@ -86,6 +87,14 @@ public class CertificateParameters {
 
   public void setIssuerCN(String issuerCN) {
     this.issuerCN = issuerCN;
+  }
+
+  public String getDomainName() {
+    return domainName;
+  }
+
+  public void setDomainName(String domainName) {
+    this.domainName = domainName;
   }
 
   public String toDN() {
