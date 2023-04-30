@@ -1,6 +1,8 @@
 package com.certificator.process;
 
 import com.certificator.support.OSSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.concurrent.Future;
 
 public class ProcessCall implements OSSupport {
   public record ProcessResult(int exitCode, List<String> log) { }
+  Logger log = LoggerFactory.getLogger(ProcessCall.class);
   private final List<String> call = isWindows() ? List.of("cmd.exe", "/c") : List.of("/bin/sh", "-c");
   private final Path workingDir;
 
@@ -19,6 +22,7 @@ public class ProcessCall implements OSSupport {
   }
 
   public void execute(String command) {
+    log.info("Executing command: " + command);
     ProcessResult processResult = execute(command, workingDir);
     assert processResult.exitCode() == 0;
   }
@@ -40,7 +44,7 @@ public class ProcessCall implements OSSupport {
         return new ProcessResult(exitCode, output);
       }
     } catch (Exception e) {
-      //TODO: log
+      log.error("Error during process call execution", e);
       throw new RuntimeException(e);
     }
   }
