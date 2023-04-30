@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.1.0-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id "com.google.cloud.tools.jib" version "3.3.1"
 }
 
 group = 'com'
@@ -23,6 +24,27 @@ dependencies {
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+//https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
+jib {
+	allowInsecureRegistries = true
+	from {
+		image = 'brick2.xtu:5000/j20opensslbase:3.17'
+	}
+	to {
+		image = 'brick2.xtu:5000/certificator'
+		tags = ['0.2']
+	}
+	container {
+		creationTime = 'USE_CURRENT_TIMESTAMP'
+		jvmFlags = ['-Dcertificates.root=/var/lib/certificator/certs', '-DLOG_DIR=/var/lib/certificator/logs']
+		mainClass = 'com.certificator.CertificatorApplication'
+		//args = ['some', 'args']
+		ports = ['8080']
+		//labels = [key1:'value1', key2:'value2']
+		format = 'OCI'
+	}
 }
 
 tasks.named('test') {
