@@ -34,7 +34,7 @@ jib {
 	}
 	to {
 		image = 'brick2.xtu:5000/certificator'
-		tags = ['0.2']
+		tags = ['0.1']
 	}
 	container {
 		creationTime = 'USE_CURRENT_TIMESTAMP'
