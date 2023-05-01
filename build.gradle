@@ -40,9 +40,7 @@ jib {
 		creationTime = 'USE_CURRENT_TIMESTAMP'
 		jvmFlags = ['-Dcertificates.root=/var/lib/certificator/certs', '-DLOG_DIR=/var/lib/certificator/logs']
 		mainClass = 'com.certificator.CertificatorApplication'
-		//args = ['some', 'args']
 		ports = ['8080']
-		//labels = [key1:'value1', key2:'value2']
 		format = 'OCI'
 	}
 }
