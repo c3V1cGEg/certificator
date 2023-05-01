@@ -8,6 +8,10 @@ service. Application logs passwords and has options for command line injection.
 * upload cacerts store and view contents
 * upload cacerts store + certificate and get back updated store
 
+### System properties
+* -Dcertificates.root - directory where certificates will be generated
+* -DLOG_DIR - directory where applications will write its logs
+
 ### Baseimage (j20opensslbase) dockerfile
 FROM amazoncorretto:20.0.1-alpine3.17
 
